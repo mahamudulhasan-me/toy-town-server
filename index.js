@@ -82,6 +82,15 @@ async function run() {
       const toyBySeller = await toyCollection.find(query).toArray();
       res.send(toyBySeller);
     });
+
+    // get data by category
+    app.get("/categories/:category", async (req, res) => {
+      const category = req.params?.category;
+      const query = { category: category };
+      const toyByCategory = await toyCollection.find(query).toArray();
+      res.send(toyByCategory);
+    });
+
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log(
