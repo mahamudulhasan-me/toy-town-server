@@ -37,7 +37,9 @@ async function run() {
     //---------------------------------------------------
     // create index
     //---------------------------------------------------
-
+    const indexKeys = { name: 1, category: 1 };
+    const indexOptions = { name: "nameAndCategory" };
+    toyCollection.createIndex(indexKeys, indexOptions);
     //---------------------------------------------------
 
     // post toys on db
@@ -54,6 +56,18 @@ async function run() {
       res.send(allToys);
     });
 
+    // get all toys by search value
+    app.get("/toys/:searchValue", async (req, res) => {
+      const searchValue = req?.params?.searchValue;
+      const query = {
+        $or: [
+          { name: { $regex: searchValue, $options: "i" } },
+          { category: { $regex: searchValue, $options: "i" } },
+        ],
+      };
+      const toyBySearchValues = await toyCollection.find(query).toArray();
+      res.send(toyBySearchValues);
+    });
     // get single toy by id
     app.get("/toy-details/:id", async (req, res) => {
       const id = req.params.id;
