@@ -71,7 +71,7 @@ async function run() {
     app.get("/toy-details/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
-      const toyDetails = await toyCollection.find(query).toArray();
+      const toyDetails = await toyCollection.findOne(query);
       res.send(toyDetails);
     });
 
@@ -87,9 +87,32 @@ async function run() {
     app.get("/categories/:category", async (req, res) => {
       const category = req.params?.category;
       const query = { category: category };
-      const toyByCategory = await toyCollection.find(query).toArray();
+      const toyByCategory = await toyCollection.find(query).limit(3).toArray();
       res.send(toyByCategory);
     });
+
+    // ==================================================
+    // update toy info
+    app.patch("/update-toy-details/:toyId", async (req, res) => {
+      const toyId = req.params?.toyId;
+      const updatedInfo = req.body;
+      const filter = { _id: new ObjectId(toyId) };
+      const options = { upsert: true };
+      const updatedToy = {
+        $set: {
+          name: updatedInfo.name,
+          image1: updatedInfo.image1,
+          category: updatedInfo.category,
+          quantity: updatedInfo.quantity,
+          price: updatedInfo.price,
+          description: updatedInfo.description,
+        },
+      };
+      const result = await toyCollection.updateOne(filter, updatedToy, options);
+      res.send(result);
+    });
+
+    // delete toy by id
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
