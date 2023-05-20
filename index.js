@@ -44,7 +44,7 @@ async function run() {
     // post toys on db
     app.post("/toys", async (req, res) => {
       const toyDetails = req.body;
-      parseInt(toyDetails.price);
+      toyDetails.price = parseFloat(toyDetails.price);
       const result = await toyCollection.insertOne(toyDetails);
       console.log(toyDetails);
       res.send(result);
@@ -109,7 +109,7 @@ async function run() {
           image1: updatedInfo.image1,
           category: updatedInfo.category,
           quantity: updatedInfo.quantity,
-          price: updatedInfo.price,
+          price: parseFloat(updatedInfo.price),
           description: updatedInfo.description,
         },
       };
@@ -140,3 +140,4 @@ run().catch(console.dir);
 app.listen(port, () => {
   console.log(`Toy Town Listening on ${port}`);
 });
+// https://toy-town-server-mahamudulhasan-me.vercel.app/
