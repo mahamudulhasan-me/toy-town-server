@@ -51,7 +51,7 @@ async function run() {
 
     // get all toys from db
     app.get("/toys", async (req, res) => {
-      const allToys = await toyCollection.find().toArray();
+      const allToys = await toyCollection.find().limit(20).toArray();
       res.send(allToys);
     });
 
@@ -80,7 +80,10 @@ async function run() {
     app.get("/my-toys/:uid", async (req, res) => {
       const uid = req.params?.uid;
       const query = { sellerUid: uid };
-      const toyBySeller = await toyCollection.find(query).toArray();
+      const toyBySeller = await toyCollection
+        .find(query)
+        .sort({ price: 1 })
+        .toArray();
       res.send(toyBySeller);
     });
 
