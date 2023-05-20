@@ -44,6 +44,7 @@ async function run() {
     // post toys on db
     app.post("/toys", async (req, res) => {
       const toyDetails = req.body;
+      parseInt(toyDetails.price);
       const result = await toyCollection.insertOne(toyDetails);
       console.log(toyDetails);
       res.send(result);
