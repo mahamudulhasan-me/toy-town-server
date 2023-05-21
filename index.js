@@ -1,19 +1,29 @@
+/**
+ * Project Name: Toy Town
+ * Author: Mahamudul Hasan
+ *  Date: 21 May 2023
+ * ----------------------------------------------------------------
+ * Description: This is a toy car website! Explore a world of thrilling fun and imagination with our wide range of toy cars. From remote-controlled speedsters to miniature models, we have something for every young car enthusiast. Browse our collection, discover the latest trends, and experience the joy of playtime with our high-quality toy cars. Start your adventure today!
+ */
+
 const express = require("express");
 const cors = require("cors");
 require("dotenv").config();
+
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const app = express();
 const port = process.env.PORT || 4040;
 
-const blogs = require("./data/blog.json");
 // middleware
 app.use(cors());
 app.use(express.json());
 
+// server starting index
 app.get("/", (req, res) => {
   res.send("Toy Town Still Running");
 });
 
+// mongodb uri
 const uri = `mongodb+srv://${process.env.DB_NAME}:${process.env.DB_PASSWORD}@cluster0.beeiwwt.mongodb.net/?retryWrites=true&w=majority`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -82,11 +92,18 @@ async function run() {
     // get all toys by seller
     app.get("/my-toys/:uid", async (req, res) => {
       const uid = req.params?.uid;
+      const sortby = req.query.sortBy;
       const query = { sellerUid: uid };
-      const toyBySeller = await toyCollection
-        .find(query)
-        .sort({ price: 1 })
-        .toArray();
+      if (sortby === "ascending") {
+        return res.send(
+          await toyCollection.find(query).sort({ price: 1 }).toArray()
+        );
+      } else if (sortby === "descending") {
+        return res.send(
+          await toyCollection.find(query).sort({ price: -1 }).toArray()
+        );
+      }
+      const toyBySeller = await toyCollection.find(query).toArray();
       res.send(toyBySeller);
     });
 
