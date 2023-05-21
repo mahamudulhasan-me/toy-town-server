@@ -34,6 +34,7 @@ async function run() {
     const toyTownDB = client.db("toyTownDB");
     // create toy collection
     const toyCollection = toyTownDB.collection("toys");
+    const blogCollection = toyTownDB.collection("blogs");
     //---------------------------------------------------
     // create index
     //---------------------------------------------------
@@ -127,9 +128,9 @@ async function run() {
     });
 
     // get blog data
-    app.get("/blogs", (req, res) => {
-      const data = blogs;
-      res.send(data);
+    app.get("/blogs", async (req, res) => {
+      const blogs = await blogCollection.find().toArray();
+      res.send(blogs);
     });
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
