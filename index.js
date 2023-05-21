@@ -5,6 +5,7 @@ const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const app = express();
 const port = process.env.PORT || 4040;
 
+const blogs = require("./data/blog.json");
 // middleware
 app.use(cors());
 app.use(express.json());
@@ -125,6 +126,11 @@ async function run() {
       res.send(result);
     });
 
+    // get blog data
+    app.get("/blogs", (req, res) => {
+      const data = blogs;
+      res.send(data);
+    });
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log(
